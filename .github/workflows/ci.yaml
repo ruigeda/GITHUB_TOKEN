@@ -1,0 +1,39 @@
+name: CI
+
+# 触发条件：push 到 main 分支，或向 main 提 PR
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# 最小权限，够用就行
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 设置环境（按需改成 node / python / go 等）
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. 装依赖
+      - name: Install
+        run: npm ci
+
+      # 4. 跑测试
+      - name: Test
+        run: npm test
+
+      # 5. 构建
+      - name: Build
+        run: npm run build
